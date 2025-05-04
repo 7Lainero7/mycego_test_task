@@ -14,9 +14,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
+
 from django.urls import path
+from explorer.views import IndexView, YandexAuthView, YandexAuthCallbackView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('', IndexView.as_view(), name='index'),
+    path('oauth/yandex/', YandexAuthView.as_view(), name='yandex_auth'),
+    path('oauth/yandex/callback/', YandexAuthCallbackView.as_view(), name='yandex_auth_callback'),
 ]
+
