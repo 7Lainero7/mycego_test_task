@@ -16,7 +16,7 @@ Including another URLconf
 """
 
 from django.urls import path
-from .views import IndexView, YandexAuthView, YandexAuthCallbackView, DownloadView, LogoutView
+from explorer.views import IndexView, YandexAuthView, YandexAuthCallbackView, DownloadView, LogoutView
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
