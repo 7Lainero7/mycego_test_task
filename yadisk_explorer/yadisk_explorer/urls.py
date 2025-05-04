@@ -16,11 +16,12 @@ Including another URLconf
 """
 
 from django.urls import path
-from explorer.views import IndexView, YandexAuthView, YandexAuthCallbackView
+from .views import IndexView, YandexAuthView, YandexAuthCallbackView, DownloadView, LogoutView
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
     path('oauth/yandex/', YandexAuthView.as_view(), name='yandex_auth'),
     path('oauth/yandex/callback/', YandexAuthCallbackView.as_view(), name='yandex_auth_callback'),
+    path('download/', DownloadView.as_view(), name='download'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]
-

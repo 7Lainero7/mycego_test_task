@@ -2,23 +2,68 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Yandex Disk Explorer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Яндекс.Диск Explorer</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
         <div class="container">
-            <a class="navbar-brand" href="#">Yandex Disk Explorer</a>
+            <a class="navbar-brand" href="#">Яндекс.Диск Explorer</a>
             <div class="navbar-text ms-auto">
                 Вы вошли как: {{ user.name }} ({{ user.login }})
+                <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-danger ms-2">Выйти</a>
             </div>
         </div>
     </nav>
 
     <div class="container">
-        <!-- Здесь будет основной контент -->
-        <h2>Добро пожаловать!</h2>
-        <p>Теперь вы можете работать с Яндекс.Диском.</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" name="public_url"
+                       placeholder="Введите публичную ссылку Яндекс.Диска"
+                       value="{{ public_url|default:'' }}" required>
+                <button class="btn btn-primary" type="submit">Просмотреть</button>
+            </div>
+        </form>
+
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+
+        {% if files %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Файлы и папки</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for file in files %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    {% if file.type == 'dir' %}
+                                        <i class="bi bi-folder-fill text-warning me-2"></i>
+                                    {% else %}
+                                        <i class="bi bi-file-earmark me-2"></i>
+                                    {% endif %}
+                                    {{ file.name }}
+                                    <small class="text-muted ms-2">({{ file.size|filesizeformat }})</small>
+                                </div>
+                                {% if file.type == 'file' and file.download_url %}
+                                    <a href="{% url 'download' %}?url={{ file.download_url|urlencode }}"
+                                       class="btn btn-sm btn-success">
+                                        Скачать
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
